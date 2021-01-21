@@ -20,6 +20,7 @@ import GetClassAttendanceList from '../components/Econtents/getClassAttendance';
 import GetAssignmentSubmission from '../components/assignment/getAssignmentSubmission';
 import ScoreAssignment from '../components/assignment/scoreAssignment';
 import Logout from '../components/login/logout';
+import Chat from '../components/Econtents/chat';
 
 const AppNavigator = createStackNavigator(
   {
@@ -48,6 +49,7 @@ const AppNavigator = createStackNavigator(
     GetAssignmentSubmission,
     ScoreAssignment,
     Logout,
+    Chat,
   },
 
   {

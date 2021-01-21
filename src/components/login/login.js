@@ -9,8 +9,10 @@ import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import API from '../../../global';
 
 // import {AsyncStorage} from 'AsyncStorage';
 
@@ -48,7 +50,7 @@ export default class Login extends Component {
     try {
       if (this.state.username !== '' && this.state.password !== '') {
         const Logs = await fetch(
-          `http://10.211.55.11:3000/api/E_LearningLMobile/LoginLecturer?UserName=${this.state.username}&Password=${this.state.password}`,
+          `${API.BASE_URL}LoginLecturer?UserName=${this.state.username}&Password=${this.state.password}`,
         );
 
         const loggedIn = await Logs.json();
@@ -82,70 +84,66 @@ export default class Login extends Component {
         console.log(loggedIn, 'GREATE');
         console.log(personDetails, 'PersonDetails');
 
-        if (loggedIn.OutPut == null) {
-          alert('incorrect username or password');
-        } else {
-          this.props.navigation.navigate('Dashboard');
-        }
+        this.props.navigation.navigate('Dashboard');
       } else {
-        alert('please supply username and password');
+        Alert.alert('Incorrect User details');
       }
     } catch (err) {
-      throw err;
+      if (err) {
+        console.log(err);
+        this.setState({
+          showIndicator: false,
+        });
+        alert('Incorrect Username or Password');
+      }
+      // throw err;
     }
   };
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
-        <View style={styles.parentContainer}>
-          <Spinner
-            color={'blue'}
-            //visibility of Overlay Loading Spinner
-            visible={this.state.showIndicator}
-            //Text with the Spinner
-            textContent={'Logging in...'}
-            //Text style of the Spinner Text
-            textStyle={styles.spinnerTextStyle}
-          />
-          <ScrollView>
-            <View style={styles.topbox}></View>
-            <View style={styles.loginContainer}>
-              <Image
-                source={require('../../assets/nekedelogo.png')}
-                style={styles.schoologo}
-              />
-              <Text style={styles.label}>Username</Text>
-              <TextInput
-                onChangeText={this.handleChange('username')}
-                value={this.state.username}
-                name="username"
-                style={styles.input}
-              />
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                onChangeText={this.handleChange('password')}
-                value={this.state.password}
-                name="password"
-                style={styles.input1}
-              />
-              <View style={styles.buttonView}>
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    this.handleSubmit();
-                    this.onButtonPress();
-                  }}>
-                  <Text style={styles.login}>Login</Text>
-                </TouchableWithoutFeedback>
-              </View>
-              <View style={styles.buttonView}>
-                <TouchableWithoutFeedback onPress={this.handleSubmit}>
-                  <Text style={styles.login}>Login</Text>
-                </TouchableWithoutFeedback>
-              </View>
+      <View style={styles.parentContainer}>
+        <Spinner
+          color={'blue'}
+          //visibility of Overlay Loading Spinner
+          visible={this.state.showIndicator}
+          //Text with the Spinner
+          textContent={'Logging in...'}
+          //Text style of the Spinner Text
+          textStyle={styles.spinnerTextStyle}
+        />
+        <ScrollView>
+          <View style={styles.topbox}></View>
+          <View style={styles.loginContainer}>
+            <Image
+              source={require('../../assets/nekedelogo.png')}
+              style={styles.schoologo}
+            />
+            <Text style={styles.label}>Username</Text>
+            <TextInput
+              onChangeText={this.handleChange('username')}
+              value={this.state.username}
+              name="username"
+              style={styles.input}
+            />
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              onChangeText={this.handleChange('password')}
+              value={this.state.password}
+              name="password"
+              style={styles.input1}
+            />
+            <View style={styles.buttonView}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  this.handleSubmit();
+                  this.onButtonPress();
+                }}>
+                <Text style={styles.login}>Login</Text>
+              </TouchableWithoutFeedback>
             </View>
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 100,
     alignSelf: 'center',
-    marginTop: -50,
+    marginTop: -95,
     marginBottom: 50,
   },
 
@@ -181,11 +179,10 @@ const styles = StyleSheet.create({
   buttonView: {
     alignSelf: 'center',
     marginTop: 50,
-    borderWidth: 0.5,
-    width: '90%',
-    backgroundColor: '#0982B8',
-    borderBottomLeftRadius: 15,
-    borderTopRightRadius: 15,
+    width: '60%',
+    backgroundColor: '#42A5F5',
+    marginBottom: 70,
+    borderRadius: 10,
   },
   login: {
     padding: 10,
@@ -195,12 +192,19 @@ const styles = StyleSheet.create({
   },
   label: {
     marginLeft: 10,
+    fontFamily: 'Comfortaa-VariableFont_wght',
   },
   topbox: {
-    height: '30%',
+    height: 150,
     backgroundColor: '#E3F2FD',
   },
-  // loginContainer: {
-  //   height: '70%',
-  // },
+  loginContainer: {
+    flex: 1,
+    borderWidth: 0.5,
+    marginTop: 40,
+    width: '80%',
+    alignSelf: 'center',
+    borderColor: '#42A5F5',
+    borderRadius: 5,
+  },
 });

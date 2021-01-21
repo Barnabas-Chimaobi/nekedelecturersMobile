@@ -14,6 +14,7 @@ import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import API from '../../../global';
 
 export default class EditAssignment extends Component {
   constructor(props) {
@@ -159,7 +160,7 @@ export default class EditAssignment extends Component {
     const formData = new FormData();
     formData.append('Url', this.state.mainpdf);
     const assignmentAdd = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/EditAssignment?Id=${this.state.assignmentId}&allocId=${this.state.courseAllocationId}&courseId=${this.state.courseId}&dateSet=${this.state.dateSet}&dueDate=${this.state.dueDate}&instruction=${this.state.instruction}&assignment=${this.state.assignment}&assignmentInText=${this.state.assignmentText}&maxScore=${this.state.maxScore}&IsDelete=${this.state.isDelete}&publish=${this.state.publish}`,
+      `${API.BASE_URL}/EditAssignment?Id=${this.state.assignmentId}&allocId=${this.state.courseAllocationId}&courseId=${this.state.courseId}&dateSet=${this.state.dateSet}&dueDate=${this.state.dueDate}&instruction=${this.state.instruction}&assignment=${this.state.assignment}&assignmentInText=${this.state.assignmentText}&maxScore=${this.state.maxScore}&IsDelete=${this.state.isDelete}&publish=${this.state.publish}`,
       {
         method: 'Put',
         headers: {

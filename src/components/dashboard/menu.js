@@ -158,7 +158,7 @@ const Menu = (props) => {
         <View style={styles.footer}>
           <TouchableWithoutFeedback
             onPress={() => {
-              signOut();
+              signOut(),
               props.closeDrawer();
             }}>
             <View>

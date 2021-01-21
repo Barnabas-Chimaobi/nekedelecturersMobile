@@ -14,6 +14,7 @@ import DocumentPicker from 'react-native-document-picker';
 import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import API from '../../../global';
 
 export default class EditContent extends Component {
   constructor(props) {
@@ -67,7 +68,7 @@ export default class EditContent extends Component {
     });
 
     const topic = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/ManageCourseContent?courseAllocId=${gottenId}`,
+      `${API.BASE_URL}/ManageCourseContent?courseAllocId=${gottenId}`,
     );
 
     const retrievedTopic = await topic.json();
@@ -127,7 +128,7 @@ export default class EditContent extends Component {
     formData.append('Url', this.state.mainpdf);
 
     const addContent = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/EditCourseContent?videoUrl=${this.state.videoUrl}&liveStreamLink=${this.state.liveStreamLink}&startDate=${this.state.startDate}&endDate=${this.state.endDate}&Id=${this.state.id}`,
+      `${API.BASE_URL}/EditCourseContent?videoUrl=${this.state.videoUrl}&liveStreamLink=${this.state.liveStreamLink}&startDate=${this.state.startDate}&endDate=${this.state.endDate}&Id=${this.state.id}`,
       {
         method: 'PUT',
         headers: {

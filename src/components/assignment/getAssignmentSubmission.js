@@ -9,6 +9,7 @@ import {
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
+import API from '../../../global';
 
 class GetAssignmentSubmissionList extends Component {
   constructor(props) {

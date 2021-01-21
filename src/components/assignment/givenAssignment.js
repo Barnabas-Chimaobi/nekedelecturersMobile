@@ -9,11 +9,14 @@ import {
   Image,
   DrawerLayoutAndroid,
   TouchableWithoutFeedback,
+  RefreshControl,
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import {withNavigation} from 'react-navigation';
+import API from '../../../global';
 
 export default class GivenAssignments extends Component {
   constructor(props) {
@@ -21,6 +24,7 @@ export default class GivenAssignments extends Component {
     this.state = {
       assignments: [],
       showIndicator: false,
+      refreshing: false,
     };
   }
 
@@ -76,12 +80,16 @@ export default class GivenAssignments extends Component {
     const parsedCourseDetails = await JSON.parse(getCourseDetails);
     console.log(parsedCourseDetails, 'PARSEDCOURSEDETAILS');
 
+    this.setState({
+      refreshing: true,
+    });
+
     const Id = await parsedCourseDetails.map((item) => {
       return item.allocId;
     });
 
     const listAssignment = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/AssignmentViewContent?courseId=${Id}`,
+      `${API.BASE_URL}/AssignmentViewContent?courseId=${Id}`,
     );
     const listOfAssignments = await listAssignment.json();
     const mappedAssign = listOfAssignments.Output.map((item) => {
@@ -89,6 +97,7 @@ export default class GivenAssignments extends Component {
     });
     this.setState({
       // courseId: Id,
+      refreshing: false,
       assignments: mappedAssign,
     });
     console.log(listOfAssignments, 'LISTOFASSIGNMENTSssss');
@@ -145,7 +154,7 @@ export default class GivenAssignments extends Component {
     console.log(newObject, 'EACHTOPICCCCSSSS');
     // this.props.navigation.navigate('GetTopic');
     const deleteTopic = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/DeleteAssignment?Assignment=${newObject.Id}`,
+      `${API.BASE_URL}/DeleteAssignment?Assignment=${newObject.Id}`,
       {
         method: 'PUT',
         Accept: 'application/json',
@@ -165,7 +174,7 @@ export default class GivenAssignments extends Component {
     // console.log(id, 'IDDDDDDDDssssss')
 
     const submit = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/GetAssignmentSubmission?AssignmentId=${id}`,
+      `${API.BASE_URL}/GetAssignmentSubmission?AssignmentId=${id}`,
     );
 
     const getSubmits = await submit.json();
@@ -229,7 +238,13 @@ export default class GivenAssignments extends Component {
             textStyle={styles.spinnerTextStyle}
           />
 
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.fetchedAllocatedCourses}
+              />
+            }>
             <View style={styles.pickerHeader}>
               <Text style={styles.pickerHeaderText}>
                 Select to View Assignments

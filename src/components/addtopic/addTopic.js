@@ -12,6 +12,7 @@ import {
 import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import API from '../../../global';
 
 export default class AddTopic extends Component {
   constructor(props) {
@@ -22,14 +23,15 @@ export default class AddTopic extends Component {
       startDate: new Date(),
       endDate: new Date(),
       courseAllocationId: 14,
-      fromTime: '',
-      toTime: '',
+      fromTime: new Date(),
+      toTime: new Date(),
       Active: true,
       id: '',
       show: false,
       showEndDate: false,
       showStartTime: false,
       showEndTime: false,
+      mode: 'time',
     };
   }
 
@@ -80,7 +82,7 @@ export default class AddTopic extends Component {
 
   addTopic = async () => {
     const topicAdd = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/CreateTopic?topic=${this.state.topic}&coursedescription=${this.state.courseDescription}&StartDate=${this.state.startDate}&EndDate=${this.state.endDate}&Active=${this.state.Active}&courseAllocationId=${this.state.courseAllocationId}&fromTime=${this.state.fromTime}&toTime=${this.state.toTime}`,
+      `${API.BASE_URL}/CreateTopic?topic=${this.state.topic}&coursedescription=${this.state.courseDescription}&StartDate=${this.state.startDate}&EndDate=${this.state.endDate}&Active=${this.state.Active}&courseAllocationId=${this.state.courseAllocationId}&fromTime=${this.state.fromTime}&toTime=${this.state.toTime}`,
       {
         method: 'POST',
         headers: {
@@ -96,7 +98,7 @@ export default class AddTopic extends Component {
 
   getTopic = async () => {
     const gettopics = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/ManageCourseContent?courseAllocId=${this.state.id}`,
+      `${API.BASE_URL}/ManageCourseContent?courseAllocId=${this.state.id}`,
     );
     const gottenTopics = await gettopics.json();
     // console.log(courseId, 'IDDD');
@@ -157,7 +159,7 @@ export default class AddTopic extends Component {
             </View>
 
             <View>
-              <Text style={styles.text}>Course Registration</Text>
+              <Text style={styles.text}>Course Description</Text>
               <TextInput
                 onChangeText={this.handleChange('courseDescription')}
                 value={this.state.courseDescription}
@@ -172,7 +174,7 @@ export default class AddTopic extends Component {
                 <TouchableWithoutFeedback onPress={() => this.date()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.startDate?.toLocaleDateString()}</Text>
+                    {/* <Text>{this.state.startDate?.toLocaleDateString()}</Text> */}
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.show && (
@@ -182,9 +184,12 @@ export default class AddTopic extends Component {
                     is24Hour={true}
                     display="default"
                     onChange={(event, d) => {
+                      let trueTime = `${d.getDate()}/${
+                        d.getMonth() + 1
+                      }/${d.getUTCFullYear()}`;
                       if (d !== undefined) {
                         this.setState({
-                          startDate: d,
+                          startDate: trueTime,
                           show: false,
                         });
                       }
@@ -206,7 +211,7 @@ export default class AddTopic extends Component {
                 <TouchableWithoutFeedback onPress={() => this.date1()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.endDate?.toLocaleDateString()}</Text>
+                    <Text>{this.state.endDate?.toLocaleString()}</Text>
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.showEndDate && (
@@ -216,9 +221,13 @@ export default class AddTopic extends Component {
                     is24Hour={true}
                     display="default"
                     onChange={(event, d) => {
+                      let trueTime1 = `${d.getDate()}/${
+                        d.getMonth() + 1
+                      }/${d.getUTCFullYear()}`;
+                      // let trueTime1 = new Date(d);
                       if (d !== undefined) {
                         this.setState({
-                          endDate: d,
+                          endDate: trueTime1,
                           showEndDate: false,
                         });
                       }
@@ -238,26 +247,32 @@ export default class AddTopic extends Component {
             <View style={styles.dates}>
               <View style={styles.dates1}>
                 <Text style={styles.text1}>From Time</Text>
-                <TouchableWithoutFeedback onPress={() => this.date()}>
+                <TouchableWithoutFeedback onPress={() => this.time()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.fromTime?.toLocaleTimeString()}</Text>
+                    {/* <Text>{this.state.fromTime?.toLocaleTimeString()}</Text> */}
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.showStartTime && (
                   <DateTimePicker
-                    mode="time"
+                    mode={this.state.mode}
                     value={this.state.fromTime}
                     is24Hour={true}
                     display="default"
                     onChange={(event, d) => {
+                      const apiDate = new Date(d);
+                      var hours = apiDate.getHours();
+                      var minutes = apiDate.getMinutes();
+                      // var ampm = hours >= 12 ? 'pm' : 'am';
+                      var strTime = hours + ':' + minutes;
+
                       if (d !== undefined) {
                         this.setState({
-                          fromTime: d,
+                          fromTime: strTime,
                           showStartTime: false,
                         });
                       }
-                      console.log('value:', d);
+                      console.log('value:', strTime);
                     }}
                   />
                 )}
@@ -272,22 +287,27 @@ export default class AddTopic extends Component {
 
               <View style={styles.dates11}>
                 <Text style={styles.text1}>To Time</Text>
-                <TouchableWithoutFeedback onPress={() => this.date1()}>
+                <TouchableWithoutFeedback onPress={() => this.time1()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.toTime?.tolocaleTimeString()}</Text>
+                    {/* <Text>{this.state.toTime?.tolocaleTimeString()}</Text> */}
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.showEndTime && (
                   <DateTimePicker
-                    mode="time"
+                    mode={this.state.mode}
                     value={this.state.toTime}
                     is24Hour={true}
                     display="default"
                     onChange={(event, d) => {
+                      const apiDate = new Date(d);
+                      var hours = apiDate.getHours();
+                      var minutes = apiDate.getMinutes();
+                      // var ampm = hours >= 12 ? 'pm' : 'am';
+                      var strTime1 = hours + ':' + minutes;
                       if (d !== undefined) {
                         this.setState({
-                          toTime: d,
+                          toTime: strTime1,
                           showEndTime: false,
                         });
                       }

@@ -14,6 +14,7 @@ import DocumentPicker from 'react-native-document-picker';
 import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import API from '../../../global';
 
 export default class AddTopic extends Component {
   constructor(props) {
@@ -33,6 +34,8 @@ export default class AddTopic extends Component {
       selectedName: '',
       show: false,
       showEndDate: false,
+      displayDate: '',
+      displayDate1: '',
     };
   }
 
@@ -62,7 +65,7 @@ export default class AddTopic extends Component {
     AsyncStorage.setItem('courseId', JSON.stringify(gottenId));
 
     const topic = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/ManageCourseContent?courseAllocId=${gottenId}`,
+      `${API.BASE_URL}/ManageCourseContent?courseAllocId=${gottenId}`,
     );
     const retrievedTopic = await topic.json();
     const arrayOfTopics = retrievedTopic.Output.map((item) => {
@@ -122,7 +125,7 @@ export default class AddTopic extends Component {
     formData.append('Url', this.state.mainpdf);
 
     const addContent = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/AddContent?videoUrl=${this.state.videoUrl}&liveStreamLink=${this.state.liveStreamLink}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`,
+      `${API.BASE_URL}/AddContent?videoUrl=${this.state.videoUrl}&liveStreamLink=${this.state.liveStreamLink}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`,
       {
         method: 'POST',
         headers: {
@@ -302,7 +305,13 @@ export default class AddTopic extends Component {
                 <TouchableWithoutFeedback onPress={() => this.date()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.startDate?.toLocaleDateString()}</Text>
+                    <View>
+                      {this.state.displayDate == '' ? (
+                        <Text>{this.state.startDate.toLocaleDateString()}</Text>
+                      ) : (
+                        <Text>{this.state.displayDate}</Text>
+                      )}
+                    </View>
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.show && (
@@ -312,10 +321,14 @@ export default class AddTopic extends Component {
                     is24Hour={true}
                     display="default"
                     onChange={(event, d) => {
+                      let trueTime = `${d.getDate()}/${
+                        d.getMonth() + 1
+                      }/${d.getUTCFullYear()}`;
                       if (d !== undefined) {
                         this.setState({
-                          startDate: d,
+                          startDate: trueTime,
                           show: false,
+                          displayDate: trueTime,
                         });
                       }
                       console.log('value:', d);
@@ -336,7 +349,14 @@ export default class AddTopic extends Component {
                 <TouchableWithoutFeedback onPress={() => this.date1()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.endDate?.toLocaleDateString()}</Text>
+                    <View>
+                      {this.state.displayDate1 == '' ? (
+                        <Text>{this.state.endDate.toLocaleDateString()}</Text>
+                      ) : (
+                        <Text>{this.state.displayDate1}</Text>
+                      )}
+                    </View>
+                    {/* <Text>{this.state.endDate?.toLocaleDateString()}</Text> */}
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.showEndDate && (
@@ -346,10 +366,14 @@ export default class AddTopic extends Component {
                     is24Hour={true}
                     display="default"
                     onChange={(event, d) => {
+                      let trueTime1 = `${d.getDate()}/${
+                        d.getMonth() + 1
+                      }/${d.getUTCFullYear()}`;
                       if (d !== undefined) {
                         this.setState({
-                          endDate: d,
+                          endDate: trueTime1,
                           showEndDate: false,
+                          displayDate1: trueTime1,
                         });
                       }
                       console.log('value:', d);

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
+import API from '../../../global';
 
 export default class AllocatedCourses extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ export default class AllocatedCourses extends Component {
     });
 
     const listAssignment = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/AssignmentViewContent?courseId=${Id}`,
+      `${API.BASE_URL}/AssignmentViewContent?courseId=${Id}`,
     );
     const listOfAssignments = await listAssignment.json();
     console.log(listOfAssignments, 'LISTOFASSIGNMENTS');

@@ -10,6 +10,7 @@ import {
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
+import API from '../../../global';
 
 class ScoreAssignment extends Component {
   constructor(props) {
@@ -47,7 +48,7 @@ class ScoreAssignment extends Component {
 
   scoreStudent = async () => {
     const score = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/ScoreAssignment?AssignmentId=${this.state.assignmentId}&Score=${this.state.score}&studentId=${this.state.studentId}&remarks=${this.state.remarks}`,
+      `${API.BASE_URL}/ScoreAssignment?AssignmentId=${this.state.assignmentId}&Score=${this.state.score}&studentId=${this.state.studentId}&remarks=${this.state.remarks}`,
       {
         method: 'POST',
         headers: {

@@ -15,6 +15,7 @@ import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import API from '../../../global';
 
 export default class CreateAssignment extends Component {
   constructor(props) {
@@ -36,6 +37,8 @@ export default class CreateAssignment extends Component {
       mode: '',
       show: false,
       showEndDate: false,
+      displayDate: '',
+      displayDate1: '',
     };
   }
 
@@ -53,7 +56,9 @@ export default class CreateAssignment extends Component {
 
   handleChange = (name) => {
     return (text) => {
-      this.setState({[name]: text});
+      this.setState({
+        [name]: text,
+      });
     };
   };
 
@@ -95,9 +100,9 @@ export default class CreateAssignment extends Component {
     const formData = new FormData();
     formData.append('Url', this.state.mainpdf);
     const assignmentAdd = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/AssignmentAddContent?allocId=${14}&dateSet=${
-        this.state.dateSet
-      }&dueDate=${this.state.dueDate}&courseId=22&instruction=${
+      `${API.BASE_URL}/AssignmentAddContent?allocId=${14}&dateSet=${
+        this.state.displayDate
+      }&dueDate=${this.state.displayDate1}&courseId=22&instruction=${
         this.state.instruction
       }&assignmentInText=${this.state.assignmentText}&maxscore=${
         this.state.maxScore
@@ -145,20 +150,19 @@ export default class CreateAssignment extends Component {
                     marginLeft: -20,
                   }}
                 />
-                <Text style={styles.eAssignText}>E-Assignments</Text>
+                <Text style={styles.eAssignText}> E - Assignments </Text>
               </View>
             </TouchableWithoutFeedback>
           </View>
-
           {/* <Text style={styles.dashboardText}>Welcome to Admin Dashboard</Text> */}
         </View>
         <View style={styles.container}>
           <ScrollView>
             <View style={styles.pickerHeader}>
-              <Text style={styles.pickerHeaderText}>Add</Text>
+              <Text style={styles.pickerHeaderText}> Add </Text>
             </View>
             <View>
-              <Text style={styles.text}>Assignment</Text>
+              <Text style={styles.text}> Assignment </Text>
               <TextInput
                 onChangeText={this.handleChange('assignment')}
                 value={this.state.assignment}
@@ -166,9 +170,8 @@ export default class CreateAssignment extends Component {
                 style={styles.textInput}
               />
             </View>
-
             <View>
-              <Text style={styles.text}>Instruction</Text>
+              <Text style={styles.text}> Instruction </Text>
               <TextInput
                 onChangeText={this.handleChange('instruction')}
                 value={this.state.instruction}
@@ -176,9 +179,8 @@ export default class CreateAssignment extends Component {
                 style={styles.textInput}
               />
             </View>
-
             <View>
-              <Text style={styles.text2}>Assignment in Text</Text>
+              <Text style={styles.text2}> Assignment in Text </Text>
               <TextInput
                 onChangeText={this.handleChange('assignmentText')}
                 value={this.state.assignmentText}
@@ -186,10 +188,9 @@ export default class CreateAssignment extends Component {
                 style={styles.textInput}
               />
             </View>
-
             <View style={styles.fileView}>
               <View style={styles.scoreView}>
-                <Text style={styles.text2}>Max Score</Text>
+                <Text style={styles.text2}> Max Score </Text>
                 <TextInput
                   onChangeText={this.handleChange('maxScore')}
                   value={this.state.maxScore}
@@ -197,7 +198,6 @@ export default class CreateAssignment extends Component {
                   style={styles.textinput2}
                 />
               </View>
-
               <View>
                 <TouchableWithoutFeedback
                   style={styles.selectedTopics}
@@ -218,17 +218,18 @@ export default class CreateAssignment extends Component {
                     Select File
                   </Text>
                 </TouchableWithoutFeedback>
-                <Text style={{width: '50%'}}>{this.state.pdfName}</Text>
+                <Text style={{width: '50%'}}> {this.state.pdfName} </Text>
               </View>
             </View>
-
             <View style={styles.dates}>
               <View style={styles.dates1}>
-                <Text style={styles.text}>Start Date</Text>
+                <Text style={styles.text}> Start Date </Text>
                 <TouchableWithoutFeedback onPress={() => this.date()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.dateSet?.toLocaleDateString()}</Text>
+                    <View>
+                      <Text> {this.state.dateSet.toLocaleDateString()} </Text>
+                    </View>
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.show && (
@@ -238,10 +239,16 @@ export default class CreateAssignment extends Component {
                     is24Hour={true}
                     // display="default"
                     onChange={(event, d) => {
+                      let trueTime = `${d.getDate()}/${
+                        d.getMonth() + 1
+                      }/${d.getUTCFullYear()}`;
+
+                      // console.log(trueTime);
                       if (d !== undefined) {
                         this.setState({
                           dateSet: d,
                           show: false,
+                          displayDate: trueTime,
                         });
                       }
                       console.log('value:', d);
@@ -249,20 +256,21 @@ export default class CreateAssignment extends Component {
                   />
                 )}
                 {/* <TextInput
-                  onChangeText={this.handleChange('dateSet')}
-                  value={this.state.dateSet}
-                  name="dateSet"
-                  style={styles.textInput3}
-                  // editable={false}
-                /> */}
+                                  onChangeText={this.handleChange('dateSet')}
+                                  value={this.state.dateSet}
+                                  name="dateSet"
+                                  style={styles.textInput3}
+                                  // editable={false}
+                                /> */}
               </View>
-
               <View style={styles.dates11}>
-                <Text style={styles.text}>End Date</Text>
+                <Text style={styles.text}> End Date </Text>
                 <TouchableWithoutFeedback onPress={() => this.date1()}>
                   <View style={styles.dateView}>
                     <MaterialIcon name="date-range" style={styles.calender} />
-                    <Text>{this.state.dueDate?.toLocaleDateString()}</Text>
+                    <View>
+                      <Text> {this.state.dueDate.toLocaleDateString()} </Text>
+                    </View>
                   </View>
                 </TouchableWithoutFeedback>
                 {this.state.showEndDate && (
@@ -272,10 +280,14 @@ export default class CreateAssignment extends Component {
                     is24Hour={true}
                     // display="default"
                     onChange={(event, d) => {
+                      let trueTime1 = `${d.getDate()}/${
+                        d.getMonth() + 1
+                      }/${d.getUTCFullYear()}`;
                       if (d !== undefined) {
                         this.setState({
                           dueDate: d,
                           showEndDate: false,
+                          displayDate1: trueTime1,
                         });
                       }
                       console.log('value:', d);
@@ -283,17 +295,16 @@ export default class CreateAssignment extends Component {
                   />
                 )}
                 {/* <TextInput
-                  onChangeText={this.handleChange('dueDate')}
-                  value={this.state.dueDate}
-                  name="dueDate"
-                  style={styles.textInput3}
-                /> */}
+                                  onChangeText={this.handleChange('dueDate')}
+                                  value={this.state.dueDate}
+                                  name="dueDate"
+                                  style={styles.textInput3}
+                                /> */}
               </View>
             </View>
-
             <View style={styles.bottonView}>
               <TouchableWithoutFeedback onPress={this.addAssignment}>
-                <Text style={styles.button}>Create</Text>
+                <Text style={styles.button}> Create </Text>
               </TouchableWithoutFeedback>
             </View>
           </ScrollView>

@@ -12,6 +12,7 @@ import {
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
+import API from '../../../global';
 
 class GetTopics extends Component {
   constructor(props) {
@@ -52,7 +53,7 @@ class GetTopics extends Component {
     // AsyncStorage.setItem('courseId', JSON.stringify(gottenId));
 
     const topic = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/ManageCourseContent?courseAllocId=${gottenId}`,
+      `${API.BASE_URL}/ManageCourseContent?courseAllocId=${gottenId}`,
     );
     const retrievedTopic = await topic.json();
     const arrayOfTopics = retrievedTopic.Output.map((item) => {
@@ -106,7 +107,7 @@ class GetTopics extends Component {
     console.log(newObject, 'EACHTOPICCCCSSSS');
     // this.props.navigation.navigate('GetTopic');
     const deleteTopic = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/DeleteTopic?econtentTypeId=${newObject.id}`,
+      `${API.BASE_URL}/DeleteTopic?econtentTypeId=${newObject.id}`,
     );
 
     const deletedTopic = await deleteTopic.json();

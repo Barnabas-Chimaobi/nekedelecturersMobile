@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import API from '../../../global'
 
 export default class EditTopic extends Component {
   constructor(props) {
@@ -95,7 +96,7 @@ export default class EditTopic extends Component {
     };
 
     const topicAdd = await fetch(
-      'http://10.211.55.11:3000/api/E_LearningLMobile/EditEcontentType',
+      `${API.BASE_URL}http://10.211.55.11:3000/api/E_LearningLMobile/EditEcontentType`,
       {
         method: 'PUT',
         headers: {

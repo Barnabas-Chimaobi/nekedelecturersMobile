@@ -12,6 +12,7 @@ import {Picker} from '@react-native-community/picker';
 import Menu from '../dashboard/menu';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
+import API from '../../../global'
 
 // import {AsyncStorage} from 'AsyncStorage';
 
@@ -66,7 +67,7 @@ export default class Econtent extends Component {
 
   selectSession = async () => {
     const getSession = await fetch(
-      'http://10.211.55.11:3000/api/E_LearningLMobile/AllSession',
+      `${API.BASE_URL}/AllSession`,
     );
     const retrievedSession = await getSession.json();
     // console.log(retrievedSession.OutPut.Name, 'SESSIONSSSS');
@@ -91,7 +92,7 @@ export default class Econtent extends Component {
 
   selectLevel = async () => {
     const level = await fetch(
-      'http://10.211.55.11:3000/api/E_LearningLMobile/GetAllLevel',
+      `${API.BASE_URL}/GetAllLevel`,
     );
     const jsonLevel = await level.json();
     // console.log(jsonLevel, 'jsooSemester');
@@ -139,7 +140,7 @@ export default class Econtent extends Component {
       this.state.semesterId != ''
     ) {
       const allocourses = await fetch(
-        `http://10.211.55.11:3000/api/E_LearningLMobile/GetAllocatedCourses?userId=${this.state.userId}&levelId=${this.state.levelId}&sessionId=${this.state.sessionId}&semesterId=${this.state.semesterId}`,
+        `${API.BASE_URL}/GetAllocatedCourses?userId=${this.state.userId}&levelId=${this.state.levelId}&sessionId=${this.state.sessionId}&semesterId=${this.state.semesterId}`,
       );
 
       const fetchedCourses = await allocourses.json();
@@ -163,7 +164,9 @@ export default class Econtent extends Component {
 
       AsyncStorage.setItem('courseDetails', JSON.stringify(courseDetails));
 
-      this.props.navigation.navigate('AllocatedCourseContent');
+      this.props.navigation.navigate('AllocatedCourseContent', {
+        cDetails: courseDetails,
+      });
     } else {
       alert('please select all the fields');
     }

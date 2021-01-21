@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
+import API from '../../../global';
 
 export default class AllocatedCourseContent extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ export default class AllocatedCourseContent extends Component {
       allocated: [],
       courseId: '',
       Id: '',
+      usersId: '',
     };
   }
 
@@ -46,11 +48,24 @@ export default class AllocatedCourseContent extends Component {
       courseId: Id,
       Id: courseId,
     });
+
+    const personId = await AsyncStorage.getItem('personDetails');
+    const gottenPersonId = await JSON.parse(personId);
+    this.setState({
+      usersId: gottenPersonId.Id,
+    });
+  };
+
+  cred = () => {
+    this.props.navigation.navigate('Chat', {
+      cAllocId: this.state.courseId,
+      uId: this.state.usersId,
+    });
   };
 
   getAssignment = async () => {
     const listAssignment = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/AssignmentViewContent?courseId=${this.state.courseId}`,
+      `${API.BASE_URL}/AssignmentViewContent?courseId=${this.state.courseId}`,
     );
     const listOfAssignments = await listAssignment.json();
     console.log(listOfAssignments, 'LISTOFASSIGNMENTS');
@@ -60,7 +75,7 @@ export default class AllocatedCourseContent extends Component {
 
   getContent = async () => {
     const allContents = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/GetCourseContents?Id=${this.state.Id}`,
+      `${API.BASE_URL}/GetCourseContents?Id=${this.state.Id}`,
     );
     const fetchedContents = await allContents.json();
     console.log(fetchedContents, 'FTECHED CONTENTS');
@@ -121,6 +136,9 @@ export default class AllocatedCourseContent extends Component {
                     <TouchableWithoutFeedback
                       onPress={() => this.getAssignment()}>
                       <Text style={styles.addText}>Add</Text>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={() => this.cred()}>
+                      <Text style={styles.addText}>Chat Room</Text>
                     </TouchableWithoutFeedback>
                   </View>
                 </View>

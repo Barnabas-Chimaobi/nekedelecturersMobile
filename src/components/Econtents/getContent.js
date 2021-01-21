@@ -14,6 +14,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Menu from '../dashboard/menu';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import API from '../../../global';
 
 class GetContent extends Component {
   constructor(props) {
@@ -88,7 +89,7 @@ class GetContent extends Component {
 
   getCurrentContent = async () => {
     const allContents = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/GetCourseContents?Id=${this.state.Id}`,
+      `${API.BASE_URL}/GetCourseContents?Id=${this.state.Id}`,
     );
 
     const fetchedContents = await allContents.json();
@@ -106,7 +107,7 @@ class GetContent extends Component {
 
   classList = async (id) => {
     const attendance = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/GetClassAttendanceList?EcontentId=${id}`,
+      `${API.BASE_URL}/GetClassAttendanceList?EcontentId=${id}`,
     );
     const fetchedAttendance = await attendance.json();
     console.log(fetchedAttendance, 'FETCEDATTENDAAAAAAAA');
@@ -145,14 +146,11 @@ class GetContent extends Component {
   };
 
   deleteContent = async (id) => {
-    const deleteItem = await fetch(
-      `http://10.211.55.11:3000/api/E_LearningLMobile/DeleteEContent?id=${id}`,
-      {
-        method: 'DELETE',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    );
+    const deleteItem = await fetch(`${API.BASE_URL}/DeleteEContent?id=${id}`, {
+      method: 'DELETE',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    });
     const deleted = await deleteItem.json();
     this.getCurrentContent();
     console.log(deleted, 'DELETTTEEEDDD');
